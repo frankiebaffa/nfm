@@ -1,0 +1,2 @@
+This paragraph is improperly exited
+- and should contain this line as a paragraph and not a list.

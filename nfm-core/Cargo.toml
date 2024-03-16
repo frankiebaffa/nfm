@@ -1,0 +1,17 @@
+[package]
+name = "nfm-core"
+version = "1.0.0"
+edition = "2021"
+
+[dev-dependencies.criterion]
+version = "0.4"
+
+[[bench]]
+name = "bench_1"
+harness = false
+
+[[bench]]
+name = "bench_2"
+harness = false
+
+[dependencies]

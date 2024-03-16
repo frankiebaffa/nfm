@@ -1,0 +1,1 @@
+[ ] An unchecked checkbox.
