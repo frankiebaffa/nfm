@@ -3,13 +3,13 @@ No-Flavor Markdown - Convert markdown to html.
 Usage: nfm [ARGUMENTS] <PATH>
 
 Arguments:
-    -h    --help           Print this help message.
-    -t    --timing         Print timing information.
-    -n    --dry-run        Do not print output or save to file.
-    -o    --output-path    Output to a file.
-    -i    --read-stdin     Read from stdin.
-    -l    --license-notice Print the license notice.
-    -L    --license-full   Print the license in full.
+    -h    --help                         Print this help message.
+    -t    --timing                       Print timing information.
+    -n    --dry-run                      Do not print output or save to file.
+    -o    --output-path    <OUTPUT-PATH> Output to a file.
+    -i    --read-stdin                   Read from stdin.
+    -l    --license-notice               Print the license notice.
+    -L    --license-full                 Print the license in full.
 
 Values:
-    PATH                   The path to the file to parse.
+    PATH                                 The path to the file to parse.
