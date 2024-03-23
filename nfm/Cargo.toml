@@ -3,9 +3,8 @@ name = "nfm"
 version = "1.0.0"
 edition = "2021"
 
-[dependencies.clap]
-version = "4.5.2"
-features = [ "derive" ]
-
 [dependencies.nfm-core]
 path = "../nfm-core"
+
+[dependencies.args]
+path = "../libs/args-rs"

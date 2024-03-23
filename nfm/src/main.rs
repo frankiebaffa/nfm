@@ -17,57 +17,82 @@
 //! A parser for No-Flavor Markdown.
 
 use {
-    clap::Parser as Cli,
+    args::{ Arguments, OptionType, },
     nfm_core::Parser,
     std::{
         fs::OpenOptions,
-        io::{ Read, Result, stdin, Write, },
+        io::{ Error, ErrorKind, Read, Result, stdin, Write, },
         process::exit,
         time::Instant,
     },
 };
 
+const HELP: &str = include_str!("../resources/help.txt");
 const LICENSE_NOTICE: &str = include_str!("../../NOTICE-GPL");
 const LICENSE_FULL: &str = include_str!("../../LICENSE-GPL");
 
-/// No-Flavor Markdown - Convert markdown to html.
-#[derive(Cli)]
+#[derive(Default)]
 struct Args {
-    /// Print timing information.
-    #[arg(short, long)]
     timing: bool,
-    /// Do not print output or save to file.
-    #[arg(short='n', long="dry-run")]
     dry_run: bool,
-    /// Output to a file.
-    #[arg(short, long)]
     output_path: Option<String>,
-    /// Read from stdin
-    #[arg(short='i', long="read-stdin")]
     read_stdin: bool,
-    /// Print the license notice.
-    #[arg(short='l')]
-    license_notice: bool,
-    /// Print the license in full.
-    #[arg(short='L')]
-    license_full: bool,
-    /// The path to the file to parse.
     path: Option<String>,
 }
 
 fn main() -> Result<()> {
-    let Args {
-        timing, dry_run, output_path, path, read_stdin, license_notice,
-        license_full
-    } = Args::parse();
+    let mut args = Args::default();
+    Arguments::with_args(&mut args, |a, b, c| {
+        match c.option_type() {
+            OptionType::Argument(_) => match c.qualifier() {
+                "h"|"help" => {
+                    println!("{HELP}");
+                    std::process::exit(0);
+                },
+                "t"|"timing" => b.timing = true,
+                "n"|"dry-run" => b.dry_run = true,
+                "o"|"output-path" => match a.next() {
+                    Some(a) => match a.option_type() {
+                        OptionType::Argument(_) => return Err(
+                            Error::new(
+                                ErrorKind::Other,
+                                "-o|--output-path requires a value".to_owned(),
+                            )
+                        ),
+                        OptionType::Value(_) => b.output_path = Some(a.qualifier().to_owned()),
+                    },
+                    None => return Err(Error::new(
+                        ErrorKind::Other,
+                        "-o|--output-path requires a value.".to_owned(),
+                    )),
+                },
+                "i"|"read-stdin" => b.read_stdin = true,
+                "l"|"license-notice" => {
+                    println!("{LICENSE_NOTICE}");
+                    std::process::exit(0);
+                },
+                "L"|"license-full" => {
+                    println!("{LICENSE_FULL}");
+                    std::process::exit(0);
+                },
+                q => return Err(Error::new(ErrorKind::Other, q.to_string())),
+            },
+            OptionType::Value(_) => if c.is_last() {
+                b.path = Some(c.qualifier().to_owned());
+            } else {
+                return Err(
+                    Error::new(
+                        ErrorKind::Other,
+                        "Value found in illegal position.".to_owned()
+                    )
+                );
+            },
+        }
 
-    if license_full {
-        println!("{LICENSE_FULL}");
-        return Ok(());
-    } else if license_notice {
-        println!("{LICENSE_NOTICE}");
-        return Ok(());
-    }
+        Ok(())
+    })?;
+
+    let Args { timing, dry_run, output_path, path, read_stdin } = args;
 
     let (output, dur) = if read_stdin {
             let stdin = stdin();
