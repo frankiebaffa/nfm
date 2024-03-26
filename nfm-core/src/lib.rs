@@ -176,6 +176,16 @@ impl<'a> Parser<'a> {
         }
     }
 
+    fn br(&mut self) -> bool {
+        if !self.line.eq("  ") {
+            return false;
+        }
+
+        self.advance(2);
+        self.output.push_str("<br />");
+        true
+    }
+
     fn strong(&mut self) -> bool {
         if self.line.starts_with("**") {
             self.advance(2);
@@ -650,6 +660,8 @@ impl<'a> Parser<'a> {
                 self.output.push_str("&lt;");
             }
             else if !self.in_code && (
+                // br
+                self.br() ||
                 // strong
                 self.strong() ||
                 // em
@@ -909,7 +921,7 @@ impl<'a> Parser<'a> {
                 continue;
             }
             // hr
-            else if !self.in_an_element()&& self.line.eq("- - -") {
+            else if !self.in_an_element() && self.line.eq("- - -") {
                 revert_all!();
                 self.advance(5);
                 self.output.push_str("<hr />\n");
@@ -1068,9 +1080,9 @@ impl<'a> Parser<'a> {
             }
             // blockquote
             else if !self.in_pre_code && !self.in_paragraph && !self.in_table && !self.in_code_fence && !self.in_list() && self.line.starts_with('>') {
-                revert_all_but_blockquote!();
                 self.advance(1);
                 if !self.in_blockquote {
+                    revert_all_but_blockquote!();
                     self.output.push_str("<blockquote>");
                     self.in_blockquote = true;
                 } else {

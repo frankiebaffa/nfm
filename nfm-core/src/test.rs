@@ -24,11 +24,28 @@ fn anchor_1() {
     assert_eq!(include_str!("../tests/anchor/1/against.html"), html);
 }
 
+#[test]
+fn br_1() {
+    let html = Parser::parse_str(include_str!("../tests/br/1/test.md"));
+    assert_eq!(include_str!("../tests/br/1/against.html"), html);
+}
+
+#[test]
+fn br_2() {
+    let html = Parser::parse_str(include_str!("../tests/br/2/test.md"));
+    assert_eq!(include_str!("../tests/br/2/against.html"), html);
+}
 
 #[test]
 fn blockquote_1() {
     let html = Parser::parse_str(include_str!("../tests/blockquote/1/test.md"));
     assert_eq!(include_str!("../tests/blockquote/1/against.html"), html);
+}
+
+#[test]
+fn blockquote_2() {
+    let html = Parser::parse_str(include_str!("../tests/blockquote/2/test.md"));
+    assert_eq!(include_str!("../tests/blockquote/2/against.html"), html);
 }
 
 #[test]
@@ -119,6 +136,12 @@ fn del_1() {
 fn em_1() {
     let html = Parser::parse_str(include_str!("../tests/em/1/test.md"));
     assert_eq!(include_str!("../tests/em/1/against.html"), html);
+}
+
+#[test]
+fn em_2() {
+    let html = Parser::parse_str(include_str!("../tests/em/2/test.md"));
+    assert_eq!(include_str!("../tests/em/2/against.html"), html);
 }
 
 #[test]
