@@ -1,7 +1,6 @@
 # No-Flavor Markdown
 
-> _I got no flavor, it's what I deserve, really._
-
+> _I got no flavor, it's what I deserve, really._  
 > - Michael, _The Good Place_
 
 - - -
