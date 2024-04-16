@@ -49,6 +49,18 @@ fn blockquote_2() {
 }
 
 #[test]
+fn blockquote_3() {
+    let html = Parser::parse_str(include_str!("../tests/blockquote/3/test.md"));
+    assert_eq!(include_str!("../tests/blockquote/3/against.html"), html);
+}
+
+#[test]
+fn blockquote_4() {
+    let html = Parser::parse_str(include_str!("../tests/blockquote/4/test.md"));
+    assert_eq!(include_str!("../tests/blockquote/4/against.html"), html);
+}
+
+#[test]
 fn checked_1() {
     let html = Parser::parse_str(include_str!("../tests/checked/1/test.md"));
     assert_eq!(include_str!("../tests/checked/1/against.html"), html);
@@ -73,7 +85,7 @@ fn codefence_2() {
 }
 
 #[test]
-fn codefence_3() {
+fn codefence_4() {
     let html = Parser::parse_str(include_str!("../tests/codefence/3/test.md"));
     assert_eq!(include_str!("../tests/codefence/3/against.html"), html);
 }

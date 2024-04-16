@@ -1089,10 +1089,14 @@ impl<'a> Parser<'a> {
                     self.output.push('\n');
                 }
 
-                self.trim_start();
+                if !self.br() {
+                    self.trim_start();
+                }
+
                 self.parse_inline();
                 continue;
             }
+            // table
             else if (
                 !self.in_pre_code && !self.in_paragraph && !self.in_blockquote &&
                 !self.in_code_fence && !self.in_list() && self.line.starts_with('|')
