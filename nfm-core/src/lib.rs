@@ -604,7 +604,7 @@ impl<'a> Parser<'a> {
                 self.output.push_str("\" align=\"");
                 self.output.push_str(align);
                 self.output.push_str("\" valign=\"");
-                self.output.push_str(&valign);
+                self.output.push_str(valign);
                 self.output.push_str("\" colspan=\"");
                 self.output.push_str(&colspan);
                 self.output.push_str("\" rowspan=\"");
@@ -615,7 +615,7 @@ impl<'a> Parser<'a> {
                 self.output.push_str("<td align=\"");
                 self.output.push_str(align);
                 self.output.push_str("\" valign=\"");
-                self.output.push_str(&valign);
+                self.output.push_str(valign);
                 self.output.push_str("\" colspan=\"");
                 self.output.push_str(&colspan);
                 self.output.push_str("\" rowspan=\"");
