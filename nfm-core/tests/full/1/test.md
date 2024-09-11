@@ -41,3 +41,9 @@ Here is another paragraph with ^super^ text.
 With superscript and anchors, you should be able to mimic footnotes[^1^](#foot-1).
 
 <foot-1>^1^: This is a footnote.
+
+- Here
+    0. is
+    - a
+- mixed
+- list.

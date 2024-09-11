@@ -118,7 +118,7 @@ impl<'a> Parser<'a> {
     }
 
     fn list_level(&self) -> usize {
-        self.list_nest.len()
+        self.list_nest.len() / 2
     }
 
     fn count_indentation_levels(&mut self) -> usize {
@@ -133,21 +133,53 @@ impl<'a> Parser<'a> {
         i
     }
 
+
     fn handle_list_level_discrepancy<'h>(&mut self, symbol: &'h str, open: &'h str, close: &'h str) {
+        macro_rules! handle_list {
+            () => {
+                let item_close = self.list_nest.pop().unwrap();
+                let list_close = self.list_nest.pop().unwrap();
+
+                // lists are the same, no need to close list
+                if list_close == close {
+                    self.output.push_str(&item_close);
+                    self.output.push_str("<li>");
+                    self.list_nest.push(list_close);
+                    self.list_nest.push("</li>".to_owned());
+                }
+                // lists differ, close the current list
+                else {
+                    // close current list
+                    self.output.push_str(&item_close);
+                    self.output.push_str(&list_close);
+
+                    // open next list
+                    self.output.push_str(open);
+                    self.output.push_str("<li>");
+
+                    // store closures
+                    self.list_nest.push(close.to_owned());
+                    self.list_nest.push("</li>".to_owned());
+                }
+            }
+        }
+
         let lvl = self.count_indentation_levels() + 1;
         self.advance(symbol.len());
         let diff = self.list_level() as i32 - lvl as i32;
 
         match diff {
             // same
-            0 => {},
+            0 => {
+                handle_list!();
+            },
             // list decreased in level
             1.. => {
-                let diff = diff as usize;
-
-                for _ in 0..diff {
+                for _ in 0..(diff * 2) {
                     self.output.push_str(&self.list_nest.pop().unwrap());
                 }
+
+                handle_list!();
             },
             // list increased in level
             _ => {
@@ -155,7 +187,9 @@ impl<'a> Parser<'a> {
 
                 for _ in 0..diff {
                     self.output.push_str(open);
+                    self.output.push_str("<li>");
                     self.list_nest.push(close.to_owned());
+                    self.list_nest.push("</li>".to_owned());
                 }
             }
         }
@@ -728,7 +762,6 @@ impl<'a> Parser<'a> {
         macro_rules! revert_list {
             () => {
                 if self.in_list() {
-                    self.output.push_str("</li>");
                     while self.in_list() {
                         self.output.push_str(&self.list_nest.pop().unwrap());
                     }
@@ -940,11 +973,7 @@ impl<'a> Parser<'a> {
             // ul
             else if !self.in_pre_code && !self.in_paragraph && !self.in_blockquote && !self.in_table && !self.in_code_fence && self.starts_with_trimmed_char('-') {
                 revert_all_but_list!();
-                if self.in_list() {
-                    self.output.push_str("</li>");
-                }
                 self.handle_list_level_discrepancy("-", "<ul>", "</ul>");
-                self.output.push_str("<li>");
                 self.trim_start();
                 self.parse_inline();
                 continue;
@@ -952,11 +981,7 @@ impl<'a> Parser<'a> {
             // ol
             else if !self.in_pre_code && !self.in_paragraph && !self.in_blockquote && !self.in_table && !self.in_code_fence && self.starts_with_trimmed("0.") {
                 revert_all_but_list!();
-                if self.in_list() {
-                    self.output.push_str("</li>");
-                }
                 self.handle_list_level_discrepancy("0.", "<ol>", "</ol>");
-                self.output.push_str("<li>");
                 self.trim_start();
                 self.parse_inline();
                 continue;

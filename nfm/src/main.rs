@@ -51,7 +51,7 @@ fn main() -> Result<()> {
                 },
                 "t"|"timing" => b.timing = true,
                 "n"|"dry-run" => b.dry_run = true,
-                "o"|"output-path" => match a.next() {
+                "o"|"output-path" => match a.next_arg() {
                     Some(a) => match a.option_type() {
                         OptionType::Argument(_) => return Err(
                             Error::new(
