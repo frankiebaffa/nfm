@@ -75,6 +75,10 @@ fn main() -> Result<()> {
                     println!("{LICENSE_FULL}");
                     std::process::exit(0);
                 },
+                "V"|"version" => {
+                    println!("nfm v{}", env!("CARGO_PKG_VERSION"));
+                    std::process::exit(0);
+                },
                 q => return Err(Error::new(ErrorKind::Other, q.to_string())),
             },
             OptionType::Value(_) => if c.is_last() {
